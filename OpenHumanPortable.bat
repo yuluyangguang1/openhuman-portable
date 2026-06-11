@@ -25,7 +25,7 @@ set "LIB_DIR=%SCRIPT_DIR%lib"
 set "RUN_LOCK=%PORTABLE_DATA%\.running"
 
 REM Remove trailing backslash from SCRIPT_DIR for PS scripts
-set "SCRIPT_DIR_PS=%SCRIPT_DIR:~0,-1%"
+REM SCRIPT_DIR_PS removed (unused)
 
 REM ===========================================
 REM Check binary exists

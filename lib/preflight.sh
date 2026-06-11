@@ -12,7 +12,12 @@ preflight_check() {
     local warnings=0
 
     # 1. Binary present and executable
-    local bin_file="$bin_dir/$app_name"
+    local # macOS .app bundle detection
+if [ -d "$bin_dir/OpenHuman.app" ]; then
+    bin_file="$bin_dir/OpenHuman.app/Contents/MacOS/OpenHuman"
+else
+    bin_file="$bin_dir/$app_name"
+fi
     [ "$(uname -s)" = "MINGW"* ] && bin_file="${bin_file}.exe"
 
     if [ ! -f "$bin_file" ]; then

@@ -34,11 +34,15 @@ do_show_config() {
         python3 -c "
 import json, sys
 cfg = json.load(open(sys.argv[1]))
-for k, v in cfg.items():
-    if isinstance(v, str) and len(v) > 40:
-        print(f'  {k}: {v[:8]}...{v[-4:]}')
-    else:
-        print(f'  {k}: {v}')
+providers = cfg.get('providers', [])
+if not providers:
+    print('  (无已保存的供应商)')
+for p in providers:
+    active = ' ★当前' if p.get('active') else ''
+    key = p.get('api_key', '')
+    masked = key[:8] + '...' + key[-4:] if len(key) > 12 else '***'
+    print(f'  {p.get(\"name\",\"?\")} | {p.get(\"model\",\"auto\")} | {masked}{active}')
+print(f'  共 {len(providers)} 个供应商, 版本: {cfg.get(\"version\", \"?\")}')
 " "$config_file"
     else
         cat "$config_file"

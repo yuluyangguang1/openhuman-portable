@@ -43,7 +43,7 @@ VERSION = _read_version()
 
 PORT = 17600  # config-center port
 
-# Per-process CSRF token (same design as claude-portable + openclaw).
+# Per-process CSRF token (OpenHuman Portable design).
 SERVER_TOKEN = secrets.token_hex(32)
 
 # ── Provider catalog ────────────────────────────────────────────────
@@ -455,7 +455,7 @@ def test_key(base_url, api_key, model):
 
 
 # ═══════════════════════════════════════════════════════════════
-#  Embedded UI. Styled to match the Codex / Claude / OpenClaw
+#  Embedded UI. Styled for OpenHuman Portable
 #  portable config centers: warm dark theme, cards, tabs.
 #  Loaded from lib/config_ui.html.
 # ═══════════════════════════════════════════════════════════════
@@ -578,6 +578,52 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(view_config())
             elif self.path == "/api/list":
                 self._json({"providers": list_providers()})
+            elif self.path == "/api/logs":
+                import glob as _glob
+                log_dir = os.path.join(SCRIPT_DIR, "data", "logs")
+                log_files = sorted(_glob.glob(os.path.join(log_dir, "*.log")), reverse=True)
+                if log_files:
+                    try:
+                        with open(log_files[0], "r", errors="replace") as lf:
+                            lines = lf.readlines()[-100:]
+                        self._json({"ok": True, "file": os.path.basename(log_files[0]), "content": "".join(lines)})
+                    except Exception as e:
+                        self._json({"ok": True, "file": "", "content": f"无法读取日志: {e}"})
+                else:
+                    self._json({"ok": True, "file": "", "content": "暂无日志"})
+            elif self.path == "/api/diagnose":
+                import shutil, socket
+                checks = []
+                bin_ok = os.path.exists(os.path.join(SCRIPT_DIR, "bin"))
+                checks.append({"label": "二进制目录", "ok": bin_ok})
+                data_dir = os.path.join(SCRIPT_DIR, "data", ".openhuman")
+                try:
+                    os.makedirs(data_dir, exist_ok=True)
+                    test_f = os.path.join(data_dir, ".write_test")
+                    with open(test_f, "w") as tf: tf.write("ok")
+                    os.remove(test_f)
+                    writable = True
+                except Exception:
+                    writable = False
+                checks.append({"label": "数据目录可写", "ok": writable})
+                try:
+                    usage = shutil.disk_usage(SCRIPT_DIR)
+                    free_mb = usage.free // (1024*1024)
+                    checks.append({"label": "磁盘空间", "ok": free_mb > 500, "detail": f"{free_mb}MB"})
+                except Exception:
+                    checks.append({"label": "磁盘空间", "ok": False})
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                try:
+                    sock.bind(("127.0.0.1", PORT))
+                    port_ok = True
+                except OSError:
+                    port_ok = False
+                finally:
+                    sock.close()
+                checks.append({"label": "端口可用", "ok": port_ok})
+                cfg = load_config()
+                checks.append({"label": "配置有效", "ok": len(cfg.get("providers", [])) > 0})
+                self._json({"ok": True, "checks": checks})
             else:
                 self._json({"error": "not found"}, 404)
         except Exception as e:
@@ -658,9 +704,28 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"ok": removed > 0, "removed": removed})
             elif self.path == "/api/reset":
                 removed = reset_config()
-                self._json({"ok": True, "removed": removed})
+                self._json({"ok": True, "removed": removed, "new_token": SERVER_TOKEN})
             elif self.path == "/api/export":
                 self._json(export_config())
+            elif self.path == "/api/import":
+                imported = 0
+                for p in data.get("providers", []):
+                    save_provider(p.get("name", ""), p.get("base_url", ""),
+                                  p.get("api_key", ""), p.get("model", ""))
+                    imported += 1
+                self._json({"ok": True, "imported": imported})
+            elif self.path == "/api/unbind":
+                lock_file = os.path.join(SCRIPT_DIR, "data", ".lock")
+                lock_file2 = os.path.join(SCRIPT_DIR, "data", ".running")
+                removed = 0
+                for lf in [lock_file, lock_file2]:
+                    if os.path.exists(lf):
+                        try:
+                            os.remove(lf)
+                            removed += 1
+                        except Exception:
+                            pass
+                self._json({"ok": True, "removed": removed})
             elif self.path == "/api/shutdown":
                 self._json({"ok": True, "message": "配置中心即将关闭"})
                 import threading
@@ -697,7 +762,7 @@ def main():
     except Exception:
         pass
 
-    if not os.environ.get("CODEX_BROWSER_OPENED"):
+    if not os.environ.get("OPENHUMAN_BROWSER_OPENED"):
         try:
             webbrowser.open(url)
         except Exception:

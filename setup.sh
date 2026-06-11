@@ -6,6 +6,7 @@
 #   bash setup.sh --version v0.57.18
 
 set -e
+set -u
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"

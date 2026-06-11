@@ -57,7 +57,7 @@ jobs:
         run: |
           python3 -c "
           import pathlib
-          for f in pathlib.Path('.').glob('*.html'):
+          for f in pathlib.Path('.').glob('lib/*.html'):
               t = f.read_text(errors='replace')
               if '<html' in t.lower() and '</html>' in t.lower():
                   print(f'  {f.name} OK')

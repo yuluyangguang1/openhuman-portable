@@ -170,6 +170,6 @@ OPENHUMAN_EXIT=$?
 if [ $OPENHUMAN_EXIT -ne 0 ]; then
     echo ""
     echo "  OpenHuman exit code: $OPENHUMAN_EXIT"
-    read -p "  Press Enter to close window... " _
+    read -rp "  Press Enter to close window... " _
 fi
 exit $OPENHUMAN_EXIT

@@ -59,17 +59,19 @@ case "$ARCH" in
     *)      echo "[ERROR] Unsupported architecture: $ARCH"; exit 1 ;;
 esac
 
-OPENHUMAN_BIN="$BIN_DIR/OpenHuman.app/Contents/MacOS/OpenHuman"
-
-if [ ! -f "$OPENHUMAN_BIN" ]; then
-    echo "[ERROR] OpenHuman not found: $OPENHUMAN_BIN"
+if [ -f "$BIN_DIR/OpenHuman.app/Contents/MacOS/OpenHuman" ]; then
+    OPENHUMAN_BIN="$BIN_DIR/OpenHuman.app/Contents/MacOS/OpenHuman"
+    xattr -dr com.apple.quarantine "$BIN_DIR/OpenHuman.app" 2>/dev/null
+elif [ -f "$BIN_DIR/openhuman" ]; then
+    OPENHUMAN_BIN="$BIN_DIR/openhuman"
+    xattr -dr com.apple.quarantine "$OPENHUMAN_BIN" 2>/dev/null
+else
+    echo "[ERROR] OpenHuman not found in $BIN_DIR"
+    echo "  Expected: OpenHuman.app/Contents/MacOS/OpenHuman or openhuman"
     exit 1
 fi
 
 chmod +x "$OPENHUMAN_BIN" 2>/dev/null
-
-# macOS: Remove quarantine attribute (Gatekeeper)
-xattr -dr com.apple.quarantine "$BIN_DIR/OpenHuman.app" 2>/dev/null
 
 # ═══════════════════════════════════════════
 # Single-instance lock (atomic mkdir)
@@ -162,6 +164,6 @@ OPENHUMAN_EXIT=$?
 if [ $OPENHUMAN_EXIT -ne 0 ]; then
     echo ""
     echo "  OpenHuman exit code: $OPENHUMAN_EXIT"
-    read -p "  Press Enter to close window... " _
+    read -rp "  Press Enter to close window... " _
 fi
 exit $OPENHUMAN_EXIT
