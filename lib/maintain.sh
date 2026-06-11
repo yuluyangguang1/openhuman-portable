@@ -1,0 +1,268 @@
+#!/bin/bash
+# ═══════════════════════════════════════════
+# Maintenance menu for OpenHuman Portable
+# Source this from launchers: source "$LIB_DIR/maintain.sh"
+# ═══════════════════════════════════════════
+
+show_menu() {
+    local app_name="${1:-openhuman}"
+    echo ""
+    echo "  ╔══════════════════════════════════════╗"
+    echo "  ║       OpenHuman Portable Menu        ║"
+    echo "  ╠══════════════════════════════════════╣"
+    echo "  ║  [1] 查看当前配置                    ║"
+    echo "  ║  [2] 诊断检查                        ║"
+    echo "  ║  [3] 导出配置                        ║"
+    echo "  ║  [4] 解除绑定                        ║"
+    echo "  ║  [5] 系统信息                        ║"
+    echo "  ║  [6] 清理日志                        ║"
+    echo "  ║  [7] 重置所有数据                    ║"
+    echo "  ║  [8] 查看日志                        ║"
+    echo "  ║  [0] 退出                            ║"
+    echo "  ╚══════════════════════════════════════╝"
+    echo ""
+}
+
+do_show_config() {
+    local data_dir="$1"
+    local config_file="$data_dir/.openhuman/config.json"
+    if [ ! -f "$config_file" ]; then
+        echo "  [!] 未找到配置文件: $config_file"
+        return
+    fi
+    if command -v python3 &>/dev/null; then
+        python3 -c "
+import json, sys
+cfg = json.load(open(sys.argv[1]))
+for k, v in cfg.items():
+    if isinstance(v, str) and len(v) > 40:
+        print(f'  {k}: {v[:8]}...{v[-4:]}')
+    else:
+        print(f'  {k}: {v}')
+" "$config_file"
+    else
+        cat "$config_file"
+    fi
+}
+
+do_diagnose() {
+    local bin_dir="$1"
+    local data_dir="$2"
+    local lib_dir="$3"
+    local app_name="${4:-openhuman}"
+
+    echo "  诊断检查..."
+    echo ""
+
+    # Binary
+    local bin_file="$bin_dir/$app_name"
+    [ "$(uname -s)" = "MINGW"* ] && bin_file="${bin_file}.exe"
+    if [ -f "$bin_file" ]; then
+        echo "  [ok] $app_name 二进制文件存在"
+    else
+        echo "  [FAIL] $app_name 二进制文件缺失"
+    fi
+
+    # cc-switch
+    local ccswitch="$bin_dir/cc-switch"
+    [ "$(uname -s)" = "MINGW"* ] && ccswitch="${ccswitch}.exe"
+    if [ -f "$ccswitch" ]; then
+        echo "  [ok] cc-switch 存在"
+    else
+        echo "  [INFO] cc-switch 缺失 (可选)"
+    fi
+
+    # Config
+    local config_file="$data_dir/.openhuman/config.json"
+    if [ -f "$config_file" ]; then
+        local sz=$(wc -c < "$config_file" 2>/dev/null | tr -d ' ')
+        echo "  [ok] 配置文件存在 (${sz} bytes)"
+    else
+        echo "  [WARN] 配置文件不存在"
+    fi
+
+    # Data dir writable
+    if [ -w "$data_dir" ]; then
+        echo "  [ok] 数据目录可写"
+    else
+        echo "  [FAIL] 数据目录不可写"
+    fi
+
+    # Disk space
+    local free_mb=$(df -m "$data_dir" 2>/dev/null | awk 'NR==2{print $4}')
+    if [ -n "$free_mb" ]; then
+        if [ "$free_mb" -lt 500 ] 2>/dev/null; then
+            echo "  [WARN] 磁盘空间不足: ${free_mb}MB"
+        else
+            echo "  [ok] 磁盘空间充足: ${free_mb}MB"
+        fi
+    fi
+
+    # Python
+    if [ -x "$bin_dir/python3" ] || command -v python3 &>/dev/null; then
+        echo "  [ok] Python 可用"
+    else
+        echo "  [WARN] Python 不可用"
+    fi
+
+    # Port
+    local port_busy=0
+    if command -v lsof &>/dev/null; then
+        lsof -i :17600 &>/dev/null && port_busy=1
+    elif command -v ss &>/dev/null; then
+        ss -tlnp 2>/dev/null | grep -q ":17600 " && port_busy=1
+    fi
+    if [ "$port_busy" = "1" ]; then
+        echo "  [WARN] 端口 17600 已被占用"
+    else
+        echo "  [ok] 端口 17600 可用"
+    fi
+
+    echo ""
+}
+
+do_export_config() {
+    local data_dir="$1"
+    local config_file="$data_dir/.openhuman/config.json"
+    local ts=$(date +%Y%m%d_%H%M%S)
+    local backup="$data_dir/config-backup-${ts}.json"
+    if [ -f "$config_file" ]; then
+        cp "$config_file" "$backup"
+        echo "  [ok] 配置已导出: $backup"
+    else
+        echo "  [!] 未找到配置文件"
+    fi
+}
+
+do_unbind() {
+    local data_dir="$1"
+    local lock1="$data_dir/.lock"
+    local lock2="$data_dir/.openhuman/.bind"
+    local removed=0
+    [ -f "$lock1" ] && { rm -f "$lock1"; removed=$((removed+1)); }
+    [ -f "$lock2" ] && { rm -f "$lock2"; removed=$((removed+1)); }
+    if [ "$removed" -gt 0 ]; then echo "  [ok] 已移除 $removed 个绑定锁"
+    else echo "  [info] 没有找到绑定锁"; fi
+}
+
+do_system_info() {
+    local bin_dir="$1"
+    local data_dir="$2"
+    local app_name="${3:-openhuman}"
+
+    echo "  系统信息"
+    echo "  ──────────────────────────"
+    echo "  OS:       $(uname -s) $(uname -m)"
+    echo "  Shell:    $SHELL"
+
+    local bin_file="$bin_dir/$app_name"
+    [ "$(uname -s)" = "MINGW"* ] && bin_file="${bin_file}.exe"
+    if [ -f "$bin_file" ]; then
+        local sz=$(wc -c < "$bin_file" 2>/dev/null | tr -d ' ')
+        echo "  Binary:   ${sz} bytes"
+    fi
+
+    if command -v python3 &>/dev/null; then
+        echo "  Python:   $(python3 --version 2>&1)"
+    fi
+
+    local config_file="$data_dir/.openhuman/config.json"
+    if [ -f "$config_file" ]; then
+        echo "  Config:   $config_file"
+    fi
+
+    echo "  Data:     $data_dir"
+    echo "  ──────────────────────────"
+    echo ""
+}
+
+do_cleanup_logs() {
+    local data_dir="$1"
+    local log_dir="$data_dir/logs"
+    if [ ! -d "$log_dir" ]; then
+        echo "  [ok] 日志目录不存在，无需清理"
+        return
+    fi
+    local count=$(find "$log_dir" -name "*.log" -mtime +7 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$count" = "0" ]; then
+        echo "  [ok] 没有需要清理的旧日志"
+        return
+    fi
+    echo "  找到 $count 个超过 7 天的日志"
+    read -p "  确认清理? (y/N): " C
+    if [ "$C" = "y" ] || [ "$C" = "Y" ]; then
+        find "$log_dir" -name "*.log" -mtime +7 -delete 2>/dev/null
+        echo "  [ok] 已清理"
+    fi
+}
+
+do_factory_reset() {
+    local data_dir="$1"
+    local ts=$(date +%Y%m%d_%H%M%S)
+    local backup="$data_dir/../data-backup-${ts}.tar.gz"
+
+    echo "  ⚠️  重置将删除所有配置和数据！"
+    echo "  正在备份到: $backup"
+    tar czf "$backup" -C "$data_dir/.." data 2>/dev/null
+
+    echo "  备份完成。是否继续重置？(y/N)"
+    read -r confirm
+    if [ "$confirm" = "y" ] || [ "$confirm" = "Y" ]; then
+        rm -rf "$data_dir/.openhuman" "$data_dir/.cc-switch" 2>/dev/null
+        echo "  [ok] 数据已重置。备份在: $backup"
+    else
+        echo "  已取消。备份保留: $backup"
+    fi
+}
+
+do_logs() {
+    local data_dir="$1"
+    local log_dir="$data_dir/logs"
+    mkdir -p "$log_dir" 2>/dev/null
+    echo ""
+    echo "  [a] 查看最近日志（最后 50 行）"
+    echo "  [b] 导出日志到桌面"
+    echo "  [c] 清理 7 天前的日志"
+    echo ""
+    read -p "  选择 (a-c): " -n 1 LOG_CHOICE
+    echo ""
+    case $LOG_CHOICE in
+        a)
+            local latest=$(ls -t "$log_dir"/*.log 2>/dev/null | head -1)
+            if [ -n "$latest" ]; then echo "  -- $latest --"; tail -50 "$latest"
+            else echo "  [!] 未找到日志文件"; fi ;;
+        b)
+            local ts=$(date +%Y%m%d_%H%M%S)
+            local export_file="$HOME/Desktop/openhuman-portable-logs-$ts.txt"
+            if ls "$log_dir"/*.log >/dev/null 2>&1; then
+                cat "$log_dir"/*.log > "$export_file"; echo "  [ok] 日志已导出: $export_file"
+            else echo "  [!] 没有日志可导出"; fi ;;
+        c)
+            do_cleanup_logs "$data_dir" ;;
+    esac
+}
+
+run_menu() {
+    local lib_dir="$1"
+    local bin_dir="$2"
+    local data_dir="$3"
+    local app_name="${4:-openhuman}"
+
+    while true; do
+        show_menu "$app_name"
+        echo -n "  选择: "
+        read -r choice
+        case "$choice" in
+            1) do_show_config "$data_dir" ;;
+            2) do_diagnose "$bin_dir" "$data_dir" "$lib_dir" "$app_name" ;;
+            3) do_export_config "$data_dir" ;;
+            4) do_unbind "$data_dir" ;;
+            5) do_system_info "$bin_dir" "$data_dir" "$app_name" ;;
+            6) do_cleanup_logs "$data_dir" ;;
+            7) do_factory_reset "$data_dir" ;;
+            8) do_logs "$data_dir" ;;
+            0) break ;;
+            *) echo "  无效选择" ;;
+        esac
+    done
+}

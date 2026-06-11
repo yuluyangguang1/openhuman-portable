@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=OpenHuman Portable
+Comment=OpenHuman CLI Portable
+Exec=bash -c 'cd "$(dirname "$(readlink -f "%k")")" && bash OpenHumanPortable.sh'
+Icon=utilities-terminal
+Terminal=true
+Categories=Development;
+Keywords=openhuman;ai;cli;portable;
