@@ -241,8 +241,9 @@ def _load_config():
 
 def _save_config(cfg):
     """Save config dict to JSON file atomically."""
-    OH_DIR.mkdir(parents=True, exist_ok=True)
-    _atomic_write(CONFIG_FILE, json.dumps(cfg, ensure_ascii=False, indent=2))
+    with _CONFIG_LOCK:
+        OH_DIR.mkdir(parents=True, exist_ok=True)
+        _atomic_write(CONFIG_FILE, json.dumps(cfg, ensure_ascii=False, indent=2))
 
 
 def read_current():
@@ -580,7 +581,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"providers": list_providers()})
             elif self.path == "/api/logs":
                 import glob as _glob
-                log_dir = os.path.join(SCRIPT_DIR, "data", "logs")
+                log_dir = str(DATA_DIR / "logs")
                 log_files = sorted(_glob.glob(os.path.join(log_dir, "*.log")), reverse=True)
                 if log_files:
                     try:
@@ -594,9 +595,9 @@ class Handler(BaseHTTPRequestHandler):
             elif self.path == "/api/diagnose":
                 import shutil, socket
                 checks = []
-                bin_ok = os.path.exists(os.path.join(SCRIPT_DIR, "bin"))
+                bin_ok = os.path.exists(str(PORTABLE_ROOT / "bin"))
                 checks.append({"label": "二进制目录", "ok": bin_ok})
-                data_dir = os.path.join(SCRIPT_DIR, "data", ".openhuman")
+                data_dir = str(OH_DIR)
                 try:
                     os.makedirs(data_dir, exist_ok=True)
                     test_f = os.path.join(data_dir, ".write_test")
@@ -607,7 +608,7 @@ class Handler(BaseHTTPRequestHandler):
                     writable = False
                 checks.append({"label": "数据目录可写", "ok": writable})
                 try:
-                    usage = shutil.disk_usage(SCRIPT_DIR)
+                    usage = shutil.disk_usage(str(PORTABLE_ROOT))
                     free_mb = usage.free // (1024*1024)
                     checks.append({"label": "磁盘空间", "ok": free_mb > 500, "detail": f"{free_mb}MB"})
                 except Exception:
@@ -621,7 +622,7 @@ class Handler(BaseHTTPRequestHandler):
                 finally:
                     sock.close()
                 checks.append({"label": "端口可用", "ok": port_ok})
-                cfg = load_config()
+                cfg = _load_config()
                 checks.append({"label": "配置有效", "ok": len(cfg.get("providers", [])) > 0})
                 self._json({"ok": True, "checks": checks})
             else:
@@ -709,14 +710,34 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(export_config())
             elif self.path == "/api/import":
                 imported = 0
+                cfg = _load_config()
                 for p in data.get("providers", []):
-                    save_provider(p.get("name", ""), p.get("base_url", ""),
-                                  p.get("api_key", ""), p.get("model", ""))
+                    base_url = (p.get("base_url") or "").strip().rstrip("/")
+                    api_key = (p.get("api_key") or "").strip()
+                    model = (p.get("model") or "").strip()
+                    name = (p.get("name") or "Custom").strip()
+                    if not base_url or not api_key:
+                        continue
+                    new_entry = {"id": str(uuid.uuid4()), "name": name,
+                                 "base_url": base_url, "api_key": api_key,
+                                 "model": model, "active": False}
+                    existing_idx = next((i for i, x in enumerate(cfg.get("providers", []))
+                                        if x.get("base_url") == base_url), None)
+                    if existing_idx is not None:
+                        cfg["providers"][existing_idx] = new_entry
+                    else:
+                        cfg.setdefault("providers", []).append(new_entry)
                     imported += 1
+                if cfg.get("providers"):
+                    for p in cfg["providers"]:
+                        p["active"] = False
+                    cfg["providers"][-1]["active"] = True
+                cfg["version"] = 1
+                _save_config(cfg)
                 self._json({"ok": True, "imported": imported})
             elif self.path == "/api/unbind":
-                lock_file = os.path.join(SCRIPT_DIR, "data", ".lock")
-                lock_file2 = os.path.join(SCRIPT_DIR, "data", ".running")
+                lock_file = str(DATA_DIR / ".lock")
+                lock_file2 = str(DATA_DIR / ".running")
                 removed = 0
                 for lf in [lock_file, lock_file2]:
                     if os.path.exists(lf):
