@@ -22,3 +22,4 @@ data/.running
 dist/
 __pycache__/
 bin/
+data/

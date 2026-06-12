@@ -1,0 +1,13 @@
+{
+  "providers": [
+    {
+      "id": "d5bf6b51-1a9e-4f13-a055-300014851cab",
+      "name": "OpenAI Test",
+      "base_url": "https://api.openai.com/v1",
+      "api_key": "sk-test123",
+      "model": "gpt-4o",
+      "active": true
+    }
+  ],
+  "version": 1
+}
