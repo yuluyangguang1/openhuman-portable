@@ -49,8 +49,7 @@ echo   Launching OpenHuman...
 echo   Data: %SCRIPT_DIR%\data\.openhuman
 echo.
 
-start "" "%OPENHUMAN_BIN%"
+:: Launch directly (not via start) to inherit HOME/USERPROFILE env vars
+"%OPENHUMAN_BIN%"
 
-echo   OpenHuman launched. You can close this window.
-timeout /t 5 >nul
 exit /b 0
