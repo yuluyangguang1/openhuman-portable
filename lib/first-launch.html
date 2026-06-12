@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OpenHuman Portable — </title>
+<title>OpenHuman Portable — 启动指南</title>
 <style>
 :root {
  --bg: #041c1c; --card: #062424; --secondary: #0a2e2e; --muted: #083030;
@@ -28,17 +28,17 @@ a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;t
 a:hover{border-bottom-color:var(--accent)}
 .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:48px 24px 80px}
 
-/* Theme toggle */
+/* ── Theme toggle ── */
 .theme-toggle{position:fixed;top:20px;right:20px;z-index:100;background:var(--card);border:1px solid var(--border);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:.2s}
 .theme-toggle:hover{border-color:var(--accent);transform:scale(1.1)}
 
-/* Hero */
+/* ── Hero ── */
 .hero{text-align:center;margin-bottom:48px;animation:fadeUp .9s cubic-bezier(.2,.6,.2,1) both}
 .hero h1{font-family:var(--font-serif);font-size:32px;font-weight:700;letter-spacing:.02em;background:linear-gradient(180deg,var(--fg),rgba(255,230,203,.5));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero .sub{font-family:var(--font-mono);font-size:12px;color:var(--fg-muted);letter-spacing:.15em;text-transform:uppercase;margin-top:8px}
 .hero .ver{display:inline-block;margin-top:12px;padding:4px 14px;border:1px solid var(--border);border-radius:20px;font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:.08em}
 
-/* Sections */
+/* ── Sections ── */
 .section{margin-bottom:40px;animation:fadeUp .9s cubic-bezier(.2,.6,.2,1) both}
 .section:nth-child(2){animation-delay:.08s}
 .section:nth-child(3){animation-delay:.16s}
@@ -47,7 +47,7 @@ a:hover{border-bottom-color:var(--accent)}
 .section h2{font-family:var(--font-serif);font-size:18px;color:var(--fg);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
 .section h2 .icon{font-size:20px}
 
-/* Steps */
+/* ── Steps ── */
 .step{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:10px;transition:.15s}
 .step:hover{border-color:var(--border-strong);background:rgba(0,255,200,.02)}
 .step-head{display:flex;align-items:center;gap:12px}
@@ -56,7 +56,7 @@ a:hover{border-bottom-color:var(--accent)}
 .step-desc{color:var(--fg-muted);font-size:14px;margin-top:8px;padding-left:40px;line-height:1.8}
 .step-desc code{background:var(--secondary);padding:2px 8px;border-radius:4px;font-family:var(--font-mono);font-size:13px;color:var(--accent)}
 
-/* Provider grid */
+/* ── Provider grid ── */
 .providers{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:16px 0}
 .provider{padding:12px 16px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:.15s}
 .provider:nth-child(2n){border-right:none}
@@ -64,12 +64,12 @@ a:hover{border-bottom-color:var(--accent)}
 .provider .name{font-weight:600;font-size:14px;color:var(--fg)}
 .provider .url{font-family:var(--font-mono);font-size:11px;color:var(--fg-muted);word-break:break-all;margin-top:2px}
 
-/* Callout */
+/* ── Callout ── */
 .callout{background:var(--secondary);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--fg-muted);line-height:1.8}
 .callout.warn{border-left-color:var(--warning)}
 .callout strong{color:var(--fg)}
 
-/* Terminal */
+/* ── Terminal ── */
 .term{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:16px 0}
 .term-bar{display:flex;gap:6px;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--border)}
 .term-dot{width:8px;height:8px;border-radius:50%}
@@ -81,7 +81,7 @@ a:hover{border-bottom-color:var(--accent)}
 .term-body .ok{color:var(--success)}
 .term-body .dim{opacity:.4}
 
-/* Tabs */
+/* ── Tabs ── */
 .tabs{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .tab{flex:1;padding:10px;text-align:center;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-muted);cursor:pointer;transition:.15s;border-right:1px solid var(--border);background:var(--card)}
 .tab:last-child{border-right:none}
@@ -89,7 +89,7 @@ a:hover{border-bottom-color:var(--accent)}
 .tab.active{color:var(--accent);background:rgba(0,255,200,.05)}
 .tab-content{display:none}.tab-content.active{display:block}
 
-/* Routes */
+/* ── Routes ── */
 .routes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:16px 0}
 .route{padding:16px;border-right:1px solid var(--border);text-align:center;transition:.15s}
 .route:last-child{border-right:none}
@@ -98,7 +98,7 @@ a:hover{border-bottom-color:var(--accent)}
 .route .desc{font-size:13px;color:var(--fg);line-height:1.6}
 .route.rec{background:rgba(0,255,200,.04);border-bottom:2px solid var(--accent)}
 
-/* FAQ */
+/* ── FAQ ── */
 .faq{margin:16px 0}
 .faq-item{border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden}
 .faq-q{padding:14px 18px;font-weight:600;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:.15s}
@@ -108,295 +108,295 @@ a:hover{border-bottom-color:var(--accent)}
 .faq-a{padding:0 18px;max-height:0;overflow:hidden;transition:.3s;font-size:14px;color:var(--fg-muted);line-height:1.8}
 .faq-item.open .faq-a{padding:0 18px 14px;max-height:500px}
 
-/* Done */
+/* ── Done ── */
 .done{text-align:center;padding:32px;border:1px solid var(--border);border-radius:10px;margin-top:40px;background:rgba(0,255,200,.03);animation:fadeUp .9s cubic-bezier(.2,.6,.2,1) both;animation-delay:.5s}
 .done .icon{font-size:40px;margin-bottom:12px}
 .done p{font-family:var(--font-serif);font-size:18px;color:var(--accent)}
 .done .hint{font-family:var(--font-mono);font-size:11px;color:var(--fg-muted);margin-top:8px;letter-spacing:.08em}
 
-/* Footer */
+/* ── Footer ── */
 .footer{text-align:center;margin-top:40px;padding-top:20px;border-top:1px solid var(--border);font-family:var(--font-mono);font-size:11px;color:var(--fg-muted);letter-spacing:.08em}
 .footer a{color:var(--accent)}
 
-/* Animations */
+/* ── Animations ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<button class="theme-toggle" onclick="toggleTheme()" title="切换主题">&#9790;</button>
+<button class="theme-toggle" onclick="toggleTheme()" title="切换主题"></button>
 
 <div class="wrap">
 
-<!-- Hero -->
+<!-- ═══ Hero ═══ -->
 <div class="hero">
- <h1>OpenHuman Portable</h1>
- <div class="sub">AI Super Intelligence · Zero Install · Zero Pollution</div>
- <div class="ver">v0.57.18 · Tauri + CEF</div>
+<h1>OpenHuman Portable</h1>
+<div class="sub">AI Super Intelligence · Zero Install · Zero Pollution</div>
+<div class="ver">v0.57.18 · Tauri + CEF</div>
 </div>
 
-<!-- Quick Start -->
+<!-- ═══ Quick Start ═══ -->
 <div class="section">
- <h2><span class="icon">&#9654;</span> 快速开始</h2>
+<h2><span class="icon"></span>快速开始</h2>
 
- <div class="step">
- <div class="step-head"><span class="step-num">1</span><span class="step-title"> OpenHuman</span></div>
- <div class="step-desc">
- OpenHuman <strong>Welcome</strong> <br>
- <code>data/</code> 
- </div>
- </div>
-
- <div class="step">
- <div class="step-head"><span class="step-num">2</span><span class="step-title"></span></div>
- <div class="step-desc">
- <strong>Continue Locally ()</strong> <br>
- Google / GitHub / X / Discord OAuth 
- </div>
- </div>
-
- <div class="step">
- <div class="step-head"><span class="step-num">3</span><span class="step-title"></span></div>
- <div class="step-desc">
- <strong>Keyring Consent</strong> API Key<br>
- <strong>Accept</strong> 
- </div>
- </div>
+<div class="step">
+<div class="step-head"><span class="step-num">1</span><span class="step-title">启动 OpenHuman</span></div>
+<div class="step-desc">
+ 双击启动器后，OpenHuman 会自动启动。首次运行会显示<strong>Welcome</strong>欢迎页面。<br>
+ 所有数据存储在便携包<code>data/</code>目录内，不会污染宿主机。
+</div>
 </div>
 
-<!-- Runtime Choice -->
+<div class="step">
+<div class="step-head"><span class="step-num">2</span><span class="step-title">选择运行模式</span></div>
+<div class="step-desc">
+ 欢迎页面会询问登录方式。选择<strong>Continue Locally (实验性)</strong>可跳过登录直接使用本地模式。<br>
+ 也可通过 Google / GitHub / X / Discord OAuth 登录（需要网络）。
+</div>
+</div>
+
+<div class="step">
+<div class="step-head"><span class="step-num">3</span><span class="step-title">密钥环授权</span></div>
+<div class="step-desc">
+ 首次启动桌面版会弹出<strong>Keyring Consent</strong>对话框，询问是否允许本地加密存储 API Key。<br>
+ 点击<strong>Accept</strong>授权（数据加密存储在便携包内）。
+</div>
+</div>
+</div>
+
+<!-- ═══ Runtime Choice ═══ -->
 <div class="section">
- <h2><span class="icon">&#9654;</span> 运行模式选择</h2>
+<h2><span class="icon"></span>运行模式选择</h2>
 
- <div class="routes">
- <div class="route rec">
- <div class="label">Cloud </div>
- <div class="desc">OpenHuman <br></div>
- </div>
- <div class="route">
- <div class="label">Custom </div>
- <div class="desc"><br>BYOK </div>
- </div>
- <div class="route">
- <div class="label">Local </div>
- <div class="desc"><br></div>
- </div>
- </div>
-
- <div class="callout">
- <strong> Cloud</strong> — API KeyBYOK Custom
- </div>
+<div class="routes">
+<div class="route rec">
+<div class="label">Cloud 推荐</div>
+<div class="desc">OpenHuman 托管一切<br>开箱即用</div>
+</div>
+<div class="route">
+<div class="label">Custom 自定义</div>
+<div class="desc">自选供应商<br>BYOK 模式</div>
+</div>
+<div class="route">
+<div class="label">Local 本地</div>
+<div class="desc">实验性<br>跳过登录</div>
+</div>
 </div>
 
-<!-- Add Provider -->
+<div class="callout">
+<strong>推荐选择 Cloud</strong>— 最简单的开箱体验。如果要使用自己的 API Key（BYOK），选择 Custom，按下面的步骤配置供应商。
+</div>
+</div>
+
+<!-- ═══ Add Provider ═══ -->
 <div class="section">
- <h2><span class="icon">&#9654;</span> 配置 API Key（BYOK）</h2>
+<h2><span class="icon"></span>配置 API Key（BYOK）</h2>
 
- <div class="step">
- <div class="step-head"><span class="step-num">1</span><span class="step-title"></span></div>
- <div class="step-desc">
- <strong> </strong> <code>⌘+, (Mac)</code> / <code>Ctrl+, (Win/Linux)</code>
- </div>
- </div>
-
- <div class="step">
- <div class="step-head"><span class="step-num">2</span><span class="step-title"> AI & Models</span></div>
- <div class="step-desc">
- <strong>AI & Models</strong> → AI 
- </div>
- </div>
-
- <div class="step">
- <div class="step-head"><span class="step-num">3</span><span class="step-title"></span></div>
- <div class="step-desc">
- OpenAIAnthropicDeepSeek <br>
- → → API Key → <br>
- 
- </div>
- </div>
-
- <div class="step">
- <div class="step-head"><span class="step-num">4</span><span class="step-title"></span></div>
- <div class="step-desc">
- <strong>Add Custom Provider</strong> <br>
- OpenAI API URLAPI Key<br>
- OpenAI API 
- </div>
- </div>
-
- <div class="step">
- <div class="step-head"><span class="step-num">5</span><span class="step-title"></span></div>
- <div class="step-desc">
- AI 
- </div>
- </div>
-
- <div class="routes">
- <div class="route rec">
- <div class="label">Managed</div>
- <div class="desc">OpenHuman <br></div>
- </div>
- <div class="route">
- <div class="label">Use Your Own</div>
- <div class="desc"><br> + </div>
- </div>
- <div class="route">
- <div class="label">Advanced</div>
- <div class="desc"><br></div>
- </div>
- </div>
+<div class="step">
+<div class="step-head"><span class="step-num">1</span><span class="step-title">打开设置</span></div>
+<div class="step-desc">
+ 点击左下角<strong>设置</strong>图标，或按<code>⌘+, (Mac)</code>/<code>Ctrl+, (Win/Linux)</code>。
+</div>
 </div>
 
-<!-- Supported Providers -->
+<div class="step">
+<div class="step-head"><span class="step-num">2</span><span class="step-title">进入 AI & Models</span></div>
+<div class="step-desc">
+ 在设置菜单中找到<strong>AI & Models</strong>（助手 → AI 与模型），进入推理配置面板。
+</div>
+</div>
+
+<div class="step">
+<div class="step-head"><span class="step-num">3</span><span class="step-title">启用供应商</span></div>
+<div class="step-desc">
+ 面板顶部有一排供应商芯片（OpenAI、Anthropic、DeepSeek 等）。<br>
+ 点击要启用的供应商芯片 → 弹出对话框 → 粘贴 API Key → 确认。<br>
+ 启用后芯片变为高亮状态。
+</div>
+</div>
+
+<div class="step">
+<div class="step-head"><span class="step-num">4</span><span class="step-title">添加自定义供应商</span></div>
+<div class="step-desc">
+ 如果供应商不在列表中，点击<strong>Add Custom Provider</strong>按钮。<br>
+ 填写：名称、OpenAI 兼容的 API URL、API Key。<br>
+ 支持任何 OpenAI 格式的 API 端点。
+</div>
+</div>
+
+<div class="step">
+<div class="step-head"><span class="step-num">5</span><span class="step-title">选择路由模式</span></div>
+<div class="step-desc">
+ 在 AI 面板中选择路由模式：
+</div>
+</div>
+
+<div class="routes">
+<div class="route rec">
+<div class="label">Managed</div>
+<div class="desc">OpenHuman 自动选择<br>最佳模型（推荐）</div>
+</div>
+<div class="route">
+<div class="label">Use Your Own</div>
+<div class="desc">统一使用一个<br>供应商 + 模型</div>
+</div>
+<div class="route">
+<div class="label">Advanced</div>
+<div class="desc">按任务类型<br>分别路由</div>
+</div>
+</div>
+</div>
+
+<!-- ═══ Supported Providers ═══ -->
 <div class="section">
- <h2><span class="icon">&#9654;</span> 内置供应商</h2>
+<h2><span class="icon"></span>内置供应商</h2>
 
- <div class="tabs">
- <div class="tab active" onclick="switchTab(this,'tab-cloud')">Cloud</div>
- <div class="tab" onclick="switchTab(this,'tab-local')">Local</div>
- <div class="tab" onclick="switchTab(this,'tab-custom')">Custom</div>
- </div>
-
- <div id="tab-cloud" class="tab-content active">
- <div class="providers">
- <div class="provider"><div class="name">OpenAI</div><div class="url">GPT-4o / o1 / o3</div></div>
- <div class="provider"><div class="name">Anthropic</div><div class="url">Claude Sonnet / Haiku</div></div>
- <div class="provider"><div class="name">Google Gemini</div><div class="url">Gemini 2.5 Pro / Flash</div></div>
- <div class="provider"><div class="name">DeepSeek</div><div class="url">DeepSeek Chat / Reasoner</div></div>
- <div class="provider"><div class="name">Groq</div><div class="url">Llama 3.3 / Mixtral</div></div>
- <div class="provider"><div class="name">OpenRouter</div><div class="url"> · </div></div>
- <div class="provider"><div class="name">Mistral</div><div class="url">Mistral Large / Small</div></div>
- <div class="provider"><div class="name">Together AI</div><div class="url">Llama / Mixtral</div></div>
- <div class="provider"><div class="name">Fireworks</div><div class="url">Llama / Mixtral</div></div>
- <div class="provider"><div class="name">Cerebras</div><div class="url">Llama 3.3 70B</div></div>
- <div class="provider"><div class="name">xAI / Grok</div><div class="url">Grok-3</div></div>
- <div class="provider"><div class="name">Kimi / Moonshot</div><div class="url">Moonshot v1</div></div>
- <div class="provider"><div class="name">MiniMax</div><div class="url">abab6.5</div></div>
- <div class="provider"><div class="name">Hugging Face</div><div class="url"></div></div>
- <div class="provider"><div class="name">NVIDIA</div><div class="url">NIM </div></div>
- <div class="provider"><div class="name">...</div><div class="url">26+ </div></div>
- </div>
- </div>
-
- <div id="tab-local" class="tab-content">
- <div class="providers">
- <div class="provider"><div class="name">Ollama</div><div class="url"></div></div>
- <div class="provider"><div class="name">LM Studio</div><div class="url"> GUI + API</div></div>
- </div>
- <div class="callout">
- <strong></strong> Ollama LM Studio GPU 
- </div>
- </div>
-
- <div id="tab-custom" class="tab-content">
- <div class="step">
- <div class="step-head"><span class="step-num">+</span><span class="step-title">Add Custom Provider</span></div>
- <div class="step-desc">
- AI <strong>Add Custom Provider</strong> <br>
- <br>
- · <strong>Name</strong> — slug<br>
- · <strong>API URL</strong> — OpenAI <br>
- · <strong>API Key</strong> — <br>
- OpenAI API QwenDoubaoZhipu 
- </div>
- </div>
- </div>
+<div class="tabs">
+<div class="tab active" onclick="switchTab(this,'tab-cloud')">Cloud</div>
+<div class="tab" onclick="switchTab(this,'tab-local')">Local</div>
+<div class="tab" onclick="switchTab(this,'tab-custom')">Custom</div>
 </div>
 
-<!-- Workloads -->
+<div id="tab-cloud" class="tab-content active">
+<div class="providers">
+<div class="provider"><div class="name">OpenAI</div><div class="url">GPT-4o / o1 / o3</div></div>
+<div class="provider"><div class="name">Anthropic</div><div class="url">Claude Sonnet / Haiku</div></div>
+<div class="provider"><div class="name">Google Gemini</div><div class="url">Gemini 2.5 Pro / Flash</div></div>
+<div class="provider"><div class="name">DeepSeek</div><div class="url">DeepSeek Chat / Reasoner</div></div>
+<div class="provider"><div class="name">Groq</div><div class="url">Llama 3.3 / Mixtral</div></div>
+<div class="provider"><div class="name">OpenRouter</div><div class="url">统一入口 · 所有模型</div></div>
+<div class="provider"><div class="name">Mistral</div><div class="url">Mistral Large / Small</div></div>
+<div class="provider"><div class="name">Together AI</div><div class="url">Llama / Mixtral</div></div>
+<div class="provider"><div class="name">Fireworks</div><div class="url">Llama / Mixtral</div></div>
+<div class="provider"><div class="name">Cerebras</div><div class="url">Llama 3.3 70B</div></div>
+<div class="provider"><div class="name">xAI / Grok</div><div class="url">Grok-3</div></div>
+<div class="provider"><div class="name">Kimi / Moonshot</div><div class="url">Moonshot v1</div></div>
+<div class="provider"><div class="name">MiniMax</div><div class="url">abab6.5</div></div>
+<div class="provider"><div class="name">Hugging Face</div><div class="url">开源模型推理</div></div>
+<div class="provider"><div class="name">NVIDIA</div><div class="url">NIM 推理平台</div></div>
+<div class="provider"><div class="name">更多...</div><div class="url">26+ 供应商内置</div></div>
+</div>
+</div>
+
+<div id="tab-local" class="tab-content">
+<div class="providers">
+<div class="provider"><div class="name">Ollama</div><div class="url">本地运行开源模型</div></div>
+<div class="provider"><div class="name">LM Studio</div><div class="url">本地 GUI + API</div></div>
+</div>
+<div class="callout">
+<strong>本地模型</strong>需要额外安装 Ollama 或 LM Studio，并下载模型文件。适合有 GPU 的用户。
+</div>
+</div>
+
+<div id="tab-custom" class="tab-content">
+<div class="step">
+<div class="step-head"><span class="step-num">+</span><span class="step-title">Add Custom Provider</span></div>
+<div class="step-desc">
+ 点击 AI 面板底部的<strong>Add Custom Provider</strong>按钮。<br>
+ 填写三个字段：<br>
+ ·<strong>Name</strong>— 供应商名称（自动生成 slug）<br>
+ ·<strong>API URL</strong>— OpenAI 兼容的端点地址<br>
+ ·<strong>API Key</strong>— 你的密钥<br>
+ 适用于任何 OpenAI 格式的 API（如 Qwen、Doubao、Zhipu 等）。
+</div>
+</div>
+</div>
+</div>
+
+<!-- ═══ Workloads ═══ -->
 <div class="section">
- <h2><span class="icon">&#9654;</span> 任务路由（Advanced 模式）</h2>
+<h2><span class="icon"></span>任务路由（Advanced 模式）</h2>
 
- <div class="callout">
- <strong>Advanced</strong> <strong>Managed</strong> 
- </div>
-
- <div class="tabs">
- <div class="tab active" onclick="switchTab(this,'tab-chat')">对话任务</div>
- <div class="tab" onclick="switchTab(this,'tab-bg')">后台任务</div>
- </div>
-
- <div id="tab-chat" class="tab-content active">
- <div class="step">
- <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Chat</span></div>
- <div class="step-desc"> — </div>
- </div>
- <div class="step">
- <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Reasoning</span></div>
- <div class="step-desc"> — </div>
- </div>
- <div class="step">
- <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Agentic</span></div>
- <div class="step-desc"> + — </div>
- </div>
- <div class="step">
- <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Coding</span></div>
- <div class="step-desc"> — </div>
- </div>
- </div>
-
- <div id="tab-bg" class="tab-content">
- <div class="step">
- <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Memory Summarization</span></div>
- <div class="step-desc"> — </div>
- </div>
- <div class="step">
- <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Heartbeat</span></div>
- <div class="step-desc"> — </div>
- </div>
- <div class="step">
- <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Learning / Reflections</span></div>
- <div class="step-desc"> — </div>
- </div>
- <div class="step">
- <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Subconscious</span></div>
- <div class="step-desc"> — </div>
- </div>
- </div>
+<div class="callout">
+ 仅在<strong>Advanced</strong>路由模式下需要配置。大多数用户选择<strong>Managed</strong>即可。
 </div>
 
-<!-- FAQ -->
+<div class="tabs">
+<div class="tab active" onclick="switchTab(this,'tab-chat')">对话任务</div>
+<div class="tab" onclick="switchTab(this,'tab-bg')">后台任务</div>
+</div>
+
+<div id="tab-chat" class="tab-content active">
+<div class="step">
+<div class="step-head"><span class="step-num"></span><span class="step-title">Chat</span></div>
+<div class="step-desc">快速对话模式 — 日常问答、闲聊</div>
+</div>
+<div class="step">
+<div class="step-head"><span class="step-num"></span><span class="step-title">Reasoning</span></div>
+<div class="step-desc">主代理推理 — 复杂问题、会议摘要、深度分析</div>
+</div>
+<div class="step">
+<div class="step-head"><span class="step-num"></span><span class="step-title">Agentic</span></div>
+<div class="step-desc">子代理 + 工具循环 — 需要工具调用的复杂任务</div>
+</div>
+<div class="step">
+<div class="step-head"><span class="step-num"></span><span class="step-title">Coding</span></div>
+<div class="step-desc">代码生成与编辑 — 编程任务专用</div>
+</div>
+</div>
+
+<div id="tab-bg" class="tab-content">
+<div class="step">
+<div class="step-head"><span class="step-num"></span><span class="step-title">Memory Summarization</span></div>
+<div class="step-desc">记忆摘要 — 将对话历史压缩为长期记忆</div>
+</div>
+<div class="step">
+<div class="step-head"><span class="step-num"></span><span class="step-title">Heartbeat</span></div>
+<div class="step-desc">心跳 — 定期健康检查和状态更新</div>
+</div>
+<div class="step">
+<div class="step-head"><span class="step-num"></span><span class="step-title">Learning / Reflections</span></div>
+<div class="step-desc">学习与反思 — 从对话中提取知识</div>
+</div>
+<div class="step">
+<div class="step-head"><span class="step-num"></span><span class="step-title">Subconscious</span></div>
+<div class="step-desc">潜意识 — 后台异步处理和整理</div>
+</div>
+</div>
+</div>
+
+<!-- ═══ FAQ ═══ -->
 <div class="section">
- <h2><span class="icon">&#9654;</span> 常见问题</h2>
+<h2><span class="icon"></span>常见问题</h2>
 
- <div class="faq">
- <div class="faq-item" onclick="this.classList.toggle('open')">
- <div class="faq-q"></div>
- <div class="faq-a"> <code>data/.openhuman/</code> <code>OPENHUMAN_WORKSPACE</code> <code>HOME</code> </div>
- </div>
- <div class="faq-item" onclick="this.classList.toggle('open')">
- <div class="faq-q"></div>
- <div class="faq-a"> AI & Models OpenHuman Managed Advanced </div>
- </div>
- <div class="faq-item" onclick="this.classList.toggle('open')">
- <div class="faq-q">OpenRouter </div>
- <div class="faq-a">OpenRouter API Key OpenAIAnthropicGoogle </div>
- </div>
- <div class="faq-item" onclick="this.classList.toggle('open')">
- <div class="faq-q"> OpenHuman</div>
- <div class="faq-a"> <code>data/</code> <code>data/.home/</code> </div>
- </div>
- <div class="faq-item" onclick="this.classList.toggle('open')">
- <div class="faq-q">U </div>
- <div class="faq-a"> U <code>data/</code> U </div>
- </div>
- </div>
+<div class="faq">
+<div class="faq-item" onclick="this.classList.toggle('open')">
+<div class="faq-q">数据存储在哪里？</div>
+<div class="faq-a">所有数据存储在便携包<code>data/.openhuman/</code>目录内。通过<code>OPENHUMAN_WORKSPACE</code>和<code>HOME</code>环境变量重定向，不会在宿主机留下任何痕迹。</div>
+</div>
+<div class="faq-item" onclick="this.classList.toggle('open')">
+<div class="faq-q">可以使用多个供应商吗？</div>
+<div class="faq-a">可以。在 AI & Models 面板中启用多个供应商，OpenHuman 会根据任务类型自动选择最佳模型（Managed 模式），或你可以手动指定每个任务使用的供应商（Advanced 模式）。</div>
+</div>
+<div class="faq-item" onclick="this.classList.toggle('open')">
+<div class="faq-q">OpenRouter 是什么？</div>
+<div class="faq-a">OpenRouter 是一个统一 API 网关，一个 Key 可以访问 OpenAI、Anthropic、Google 等几乎所有模型。适合不想注册多个供应商的用户。</div>
+</div>
+<div class="faq-item" onclick="this.classList.toggle('open')">
+<div class="faq-q">如何更新 OpenHuman？</div>
+<div class="faq-a">下载新版便携包，将<code>data/</code>目录复制到新版即可保留所有配置和数据。<code>data/.home/</code>目录也需一并复制。</div>
+</div>
+<div class="faq-item" onclick="this.classList.toggle('open')">
+<div class="faq-q">U 盘拔出后数据还在吗？</div>
+<div class="faq-a">所有数据都在 U 盘的<code>data/</code>目录内。拔出 U 盘后，宿主机上不会留下任何数据。</div>
+</div>
+</div>
 </div>
 
-<!-- Done -->
+<!-- ═══ Done ═══ -->
 <div class="done">
- <div class="icon" style="font-size:40px;color:var(--accent)">&#10003;</div>
- <p></p>
- <div class="hint"> · </div>
+<div class="icon"></div>
+<p>配置完成，开始使用</p>
+<div class="hint">此页面仅供首次启动参考 · 可安全关闭</div>
 </div>
 
-<!-- Footer -->
+<!-- ═══ Footer ═══ -->
 <div class="footer">
- <a href="https://github.com/yuluyangguang1/openhuman-portable">GitHub</a> ·
- <a href="https://tinyhumans.ai/openhuman">OpenHuman </a> ·
- <a href="https://github.com/tinyhumansai/openhuman"></a>
- <br>OpenHuman Portable by <a href="https://yuai-r.cn">yu.ai</a>
+<a href="https://github.com/yuluyangguang1/openhuman-portable">GitHub</a>·
+<a href="https://tinyhumans.ai/openhuman">OpenHuman 官网</a>·
+<a href="https://github.com/tinyhumansai/openhuman">上游仓库</a>
+<br>OpenHuman Portable by<a href="https://yuai-r.cn">yu.ai</a>
 </div>
 
 </div>
@@ -405,12 +405,12 @@ a:hover{border-bottom-color:var(--accent)}
 function toggleTheme(){
  var h=document.documentElement,t=h.getAttribute('data-theme')==='dark'?'light':'dark';
  h.setAttribute('data-theme',t);
- document.querySelector('.theme-toggle').textContent=t==='dark'?'\u263E':'\u2600'';
+ document.querySelector('.theme-toggle').textContent=t==='dark'?'':'';
  localStorage.setItem('oh-theme',t);
 }
 (function(){
  var s=localStorage.getItem('oh-theme');
- if(s){document.documentElement.setAttribute('data-theme',s);document.querySelector('.theme-toggle').textContent=s==='dark'?'\u263E':'\u2600'';}
+ if(s){document.documentElement.setAttribute('data-theme',s);document.querySelector('.theme-toggle').textContent=s==='dark'?'':'';}
 })();
 function switchTab(el,id){
  el.parentElement.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
