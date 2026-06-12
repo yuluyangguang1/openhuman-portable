@@ -18,11 +18,14 @@ import os
 import sys
 import time
 import uuid
+import threading
 import urllib.request
 import urllib.error
 import webbrowser
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
+
+_CONFIG_LOCK = threading.Lock()
 
 SCRIPT_DIR = Path(__file__).parent.resolve()
 PORTABLE_ROOT = SCRIPT_DIR.parent if SCRIPT_DIR.name == "lib" else SCRIPT_DIR
