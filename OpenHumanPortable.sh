@@ -32,7 +32,8 @@ fi
 
 chmod +x "$OPENHUMAN_BIN" 2>/dev/null
 
-# Create data directories
+# Create portable home (zero host pollution)
+mkdir -p "$SCRIPT_DIR/data/.home" 2>/dev/null
 mkdir -p "$SCRIPT_DIR/data/.openhuman/cef-cache" 2>/dev/null
 
 # First launch: show guide
@@ -42,7 +43,8 @@ if [ ! -f "$SCRIPT_DIR/data/.openhuman/.setup-done" ]; then
     touch "$SCRIPT_DIR/data/.openhuman/.setup-done"
 fi
 
-# Set portable environment
+# Portable environment — all paths stay inside the portable folder
+export HOME="$SCRIPT_DIR/data/.home"
 export OPENHUMAN_WORKSPACE="$SCRIPT_DIR/data/.openhuman"
 export OPENHUMAN_CEF_CACHE_PATH="$SCRIPT_DIR/data/.openhuman/cef-cache"
 

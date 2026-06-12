@@ -11,7 +11,7 @@ echo.
 set "SCRIPT_DIR=%~dp0"
 set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
 
-:: Detect architecture
+:: Detect binary
 if exist "%SCRIPT_DIR%\bin\windows-x64\OpenHuman.exe" (
     set "OPENHUMAN_BIN=%SCRIPT_DIR%\bin\windows-x64\OpenHuman.exe"
 ) else (
@@ -21,7 +21,8 @@ if exist "%SCRIPT_DIR%\bin\windows-x64\OpenHuman.exe" (
     exit /b 1
 )
 
-:: Create data directories
+:: Create portable home (zero host pollution)
+if not exist "%SCRIPT_DIR%\data\.home" mkdir "%SCRIPT_DIR%\data\.home"
 if not exist "%SCRIPT_DIR%\data\.openhuman" mkdir "%SCRIPT_DIR%\data\.openhuman"
 if not exist "%SCRIPT_DIR%\data\.openhuman\cef-cache" mkdir "%SCRIPT_DIR%\data\.openhuman\cef-cache"
 
@@ -32,7 +33,8 @@ if not exist "%SCRIPT_DIR%\data\.openhuman\.setup-done" (
     echo. > "%SCRIPT_DIR%\data\.openhuman\.setup-done"
 )
 
-:: Set portable environment
+:: Portable environment — all paths stay inside the portable folder
+set "HOME=%SCRIPT_DIR%\data\.home"
 set "OPENHUMAN_WORKSPACE=%SCRIPT_DIR%\data\.openhuman"
 set "OPENHUMAN_CEF_CACHE_PATH=%SCRIPT_DIR%\data\.openhuman\cef-cache"
 
