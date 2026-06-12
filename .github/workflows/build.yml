@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       openhuman_version:
-        description: 'OpenHuman release tag (e.g. v1.0.0). Empty = latest release.'
+        description: 'OpenHuman release tag (e.g. v0.57.18). Empty = latest release.'
         required: false
         default: ''
   push:
@@ -36,284 +36,115 @@ jobs:
         run: |
           set -e
           mkdir -p bin/macos-arm64 bin/macos-x64 bin/linux-x64 bin/windows-x64
+          VER_NUM="${OH_TAG#v}"
           BASE="https://github.com/tinyhumansai/openhuman/releases/download/${OH_TAG}"
 
           echo "  Downloading OpenHuman ${OH_TAG} ..."
 
-          # --- macOS arm64: download .app.tar.gz and extract ---
+          # --- macOS arm64: .app.tar.gz ---
           echo "  -> macOS arm64"
-          curl -fsSL -o /tmp/openhuman-macos-arm64.tar.gz \
-            "${BASE}/openhuman-*-aarch64-apple-darwin.app.tar.gz" 2>/dev/null || \
-          curl -fsSL -o /tmp/openhuman-macos-arm64.tar.gz \
-            "${BASE}/openhuman-macos-arm64.app.tar.gz" 2>/dev/null || true
-          if [ -f /tmp/openhuman-macos-arm64.tar.gz ] && [ -s /tmp/openhuman-macos-arm64.tar.gz ]; then
-            tar -xzf /tmp/openhuman-macos-arm64.tar.gz -C bin/macos-arm64
-            # Find the binary inside .app bundle
-            app_bin=$(find bin/macos-arm64 -path "*/MacOS/openhuman" -o -path "*/MacOS/OpenHuman" | head -1 || true)
-            if [ -n "$app_bin" ]; then
-              cp "$app_bin" bin/macos-arm64/openhuman
-            else
-              # Maybe it's a flat binary, not an .app
-              found=$(find bin/macos-arm64 -maxdepth 2 -type f -name 'openhuman*' ! -name '*.tar*' | head -1 || true)
-              [ -n "$found" ] && mv "$found" bin/macos-arm64/openhuman
-            fi
+          curl -fsSL -o /tmp/oh-mac-arm64.tar.gz \
+            "${BASE}/OpenHuman_${VER_NUM}_aarch64-apple-darwin.app.tar.gz" || true
+          if [ -f /tmp/oh-mac-arm64.tar.gz ] && [ -s /tmp/oh-mac-arm64.tar.gz ]; then
+            tar -xzf /tmp/oh-mac-arm64.tar.gz -C bin/macos-arm64
           fi
-          chmod +x bin/macos-arm64/openhuman 2>/dev/null || true
 
-          # --- macOS x64: download .app.tar.gz and extract ---
+          # --- macOS x64: .app.tar.gz ---
           echo "  -> macOS x64"
-          curl -fsSL -o /tmp/openhuman-macos-x64.tar.gz \
-            "${BASE}/openhuman-*-x86_64-apple-darwin.app.tar.gz" 2>/dev/null || \
-          curl -fsSL -o /tmp/openhuman-macos-x64.tar.gz \
-            "${BASE}/openhuman-macos-x64.app.tar.gz" 2>/dev/null || true
-          if [ -f /tmp/openhuman-macos-x64.tar.gz ] && [ -s /tmp/openhuman-macos-x64.tar.gz ]; then
-            tar -xzf /tmp/openhuman-macos-x64.tar.gz -C bin/macos-x64
-            app_bin=$(find bin/macos-x64 -path "*/MacOS/openhuman" -o -path "*/MacOS/OpenHuman" | head -1 || true)
-            if [ -n "$app_bin" ]; then
-              cp "$app_bin" bin/macos-x64/openhuman
-            else
-              found=$(find bin/macos-x64 -maxdepth 2 -type f -name 'openhuman*' ! -name '*.tar*' | head -1 || true)
-              [ -n "$found" ] && mv "$found" bin/macos-x64/openhuman
-            fi
+          curl -fsSL -o /tmp/oh-mac-x64.tar.gz \
+            "${BASE}/OpenHuman_${VER_NUM}_x86_64-apple-darwin.app.tar.gz" || true
+          if [ -f /tmp/oh-mac-x64.tar.gz ] && [ -s /tmp/oh-mac-x64.tar.gz ]; then
+            tar -xzf /tmp/oh-mac-x64.tar.gz -C bin/macos-x64
           fi
-          chmod +x bin/macos-x64/openhuman 2>/dev/null || true
 
-          # --- Windows x64: download .exe (NSIS) and extract with 7z ---
+          # --- Windows x64: .exe (NSIS installer) ---
           echo "  -> Windows x64"
-          curl -fsSL -o /tmp/openhuman-win.exe \
-            "${BASE}/openhuman-*-x86_64-pc-windows-msvc.exe" 2>/dev/null || \
-          curl -fsSL -o /tmp/openhuman-win.exe \
-            "${BASE}/openhuman-windows-x64.exe" 2>/dev/null || \
-          curl -fsSL -o /tmp/openhuman-win.exe \
-            "${BASE}/openhuman-*-win64.exe" 2>/dev/null || true
-          if [ -f /tmp/openhuman-win.exe ] && [ -s /tmp/openhuman-win.exe ]; then
-            # Try 7z extraction for NSIS installer
-            if command -v 7z &>/dev/null; then
-              7z x -obin/windows-x64/ /tmp/openhuman-win.exe -y 2>/dev/null || true
-              found=$(find bin/windows-x64 -maxdepth 2 -type f -name 'openhuman*.exe' ! -name 'openhuman-win.exe' | head -1 || true)
-              [ -n "$found" ] && mv "$found" bin/windows-x64/openhuman.exe
-            fi
-            # Fallback: just copy the exe directly
-            if [ ! -f bin/windows-x64/openhuman.exe ]; then
-              cp /tmp/openhuman-win.exe bin/windows-x64/openhuman.exe
-            fi
-          fi
+          curl -fsSL -o bin/windows-x64/OpenHuman-setup.exe \
+            "${BASE}/OpenHuman_${VER_NUM}_x64-setup.exe" || true
 
-          # --- Linux x64: download .AppImage (standalone) ---
+          # --- Linux x64: .AppImage ---
           echo "  -> Linux x64"
-          curl -fsSL -o bin/linux-x64/openhuman \
-            "${BASE}/openhuman-*-x86_64.AppImage" 2>/dev/null || \
-          curl -fsSL -o bin/linux-x64/openhuman \
-            "${BASE}/openhuman-linux-x86_64.AppImage" 2>/dev/null || true
-          chmod +x bin/linux-x64/openhuman 2>/dev/null || true
-
-          # Normalize: ensure binaries exist
-          for plat in macos-arm64 macos-x64 linux-x64; do
-            if [ ! -f "bin/$plat/openhuman" ]; then
-              found=$(find "bin/$plat" -maxdepth 2 -type f -name 'openhuman*' ! -name '*.tar*' | head -1 || true)
-              [ -n "$found" ] && mv "$found" "bin/$plat/openhuman"
-            fi
-            chmod +x "bin/$plat/openhuman" 2>/dev/null || true
-          done
-          if [ ! -f bin/windows-x64/openhuman.exe ]; then
-            found=$(find bin/windows-x64 -maxdepth 2 -type f -name '*.exe' | head -1 || true)
-            [ -n "$found" ] && mv "$found" bin/windows-x64/openhuman.exe
-          fi
+          curl -fsSL -o bin/linux-x64/OpenHuman.AppImage \
+            "${BASE}/OpenHuman_${VER_NUM}_amd64.AppImage" || true
+          chmod +x bin/linux-x64/OpenHuman.AppImage 2>/dev/null || true
 
           echo "  Download complete."
-          ls -la bin/*/
-
-      - name: Download cc-switch binaries
-        run: |
-          set -e
-          BASE="https://github.com/yuluyangguang1/codex-portable/releases/download/cc-switch-assets"
-
-          # macOS (universal binary, same file for arm64 and x64)
-          curl -fsSL -o bin/macos-arm64/cc-switch "${BASE}/cc-switch-macos"
-          curl -fsSL -o bin/macos-x64/cc-switch "${BASE}/cc-switch-macos"
-          chmod +x bin/macos-arm64/cc-switch bin/macos-x64/cc-switch
-
-          # Linux x64
-          curl -fsSL -o bin/linux-x64/cc-switch "${BASE}/cc-switch-linux-x64"
-          chmod +x bin/linux-x64/cc-switch
-
-          # Windows x64
-          curl -fsSL -o bin/windows-x64/cc-switch.exe "${BASE}/cc-switch-windows-x64.exe"
-
-          # Verify integrity
-          curl -fsSL -o /tmp/SHA256SUMS "${BASE}/SHA256SUMS"
-          ( cd bin/macos-arm64    && shasum -a 256 -c <(grep cc-switch-macos          /tmp/SHA256SUMS | sed 's|cc-switch-macos|cc-switch|') )
-          ( cd bin/linux-x64      && shasum -a 256 -c <(grep cc-switch-linux-x64      /tmp/SHA256SUMS | sed 's|cc-switch-linux-x64|cc-switch|') )
-          ( cd bin/windows-x64    && shasum -a 256 -c <(grep cc-switch-windows-x64    /tmp/SHA256SUMS | sed 's|cc-switch-windows-x64.exe|cc-switch.exe|') )
-
-          ls -lh bin/*/cc-switch* | awk '{print $5, $NF}'
-
-      - name: Download Python embeddable (Windows only)
-        run: |
-          set -e
-          # Python 3.12 embeddable for Windows x64 (~10MB, no install needed)
-          PYTHON_VER="3.12.10"
-          curl -fsSL -o /tmp/python-embed.zip "https://www.python.org/ftp/python/${PYTHON_VER}/python-${PYTHON_VER}-embed-amd64.zip"
-          mkdir -p bin/windows-x64/python
-          unzip -q /tmp/python-embed.zip -d bin/windows-x64/python
-
-          # Enable pip/site by uncommenting import site in python312._pth
-          sed -i 's/^#import site/import site/' bin/windows-x64/python/python312._pth 2>/dev/null || true
-
-          # Install pip
-          curl -fsSL -o /tmp/get-pip.py https://bootstrap.pypa.io/get-pip.py
-          bin/windows-x64/python/python.exe /tmp/get-pip.py --no-warn-script-location 2>/dev/null || true
-
-          ls -lh bin/windows-x64/python/python.exe
-
-      - name: Download Python standalone (macOS + Linux)
-        run: |
-          set -e
-          # python-build-standalone by astral-sh — fully self-contained, no system deps
-          PBS_TAG="20250409"
-          PBS_BASE="https://github.com/astral-sh/python-build-standalone/releases/download/${PBS_TAG}"
-
-          resolve_asset() {
-            local pattern="$1"
-            local name
-            name=$(curl -sL "https://api.github.com/repos/astral-sh/python-build-standalone/releases/tags/${PBS_TAG}" \
-              | python3 -c "import sys,json; [print(a['name']) for a in json.load(sys.stdin).get('assets',[])]" \
-              | grep "$pattern" | head -1)
-            if [ -z "$name" ]; then
-              echo "  [!] Asset not found: $pattern" >&2
-              return 1
-            fi
-            echo "${PBS_BASE}/${name}"
-          }
-
-          download_and_wrap() {
-            local plat="$1" pattern="$2"
-            local url
-            url=$(resolve_asset "$pattern")
-            echo "  Downloading: $url"
-            curl -fsSL "$url" | tar -xz -C "bin/$plat"
-            mv "bin/$plat/python" "bin/$plat/python3-bin" 2>/dev/null || true
-            cat > "bin/$plat/python3" <<'WRAP'
-          #!/bin/bash
-          DIR="$(cd "$(dirname "$0")" && pwd)"
-          exec "$DIR/python3-bin/bin/python3" "$@"
-          WRAP
-            chmod +x "bin/$plat/python3"
-          }
-
-          download_and_wrap macos-arm64  "aarch64-apple-darwin-install_only_stripped\.tar\.gz$"
-          download_and_wrap macos-x64    "x86_64-apple-darwin-install_only_stripped\.tar\.gz$"
-          download_and_wrap linux-x64    "x86_64-unknown-linux-gnu-install_only_stripped\.tar\.gz$"
-
-          ls -lh bin/macos-arm64/python3 bin/macos-x64/python3 bin/linux-x64/python3
+          find bin -maxdepth 3 -type f \( -name 'OpenHuman*' -o -name 'openhuman*' \) -exec ls -lh {} \;
 
       - name: Set version
-        id: ver
-        run: |
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-            echo "${GITHUB_REF#refs/tags/}" > VERSION
-          else
-            echo "version=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
-          fi
+        run: echo "${{ steps.oh_ver.outputs.tag }}" > VERSION
 
       - name: Build per-platform packages
-        env:
-          VER: ${{ steps.ver.outputs.version }}
         run: |
-          set -e
+          VER="${{ steps.oh_ver.outputs.tag }}"
+          DIST="dist"
+          mkdir -p "$DIST"
 
-          # macOS arm64
-          mkdir -p dist/OpenHumanPortable-macos-arm64
-          rsync -a --exclude='bin' --exclude='dist' --exclude='.git*' . dist/OpenHumanPortable-macos-arm64/
-          rm -rf dist/OpenHumanPortable-macos-arm64/bin
-          mkdir -p dist/OpenHumanPortable-macos-arm64/bin/macos-arm64
-          cp bin/macos-arm64/openhuman bin/macos-arm64/cc-switch dist/OpenHumanPortable-macos-arm64/bin/macos-arm64/ 2>/dev/null || true
-          cp bin/macos-arm64/python3 dist/OpenHumanPortable-macos-arm64/bin/macos-arm64/ 2>/dev/null || true
-          cp -r bin/macos-arm64/python3-bin dist/OpenHumanPortable-macos-arm64/bin/macos-arm64/ 2>/dev/null || true
-          chmod +x dist/OpenHumanPortable-macos-arm64/bin/macos-arm64/openhuman dist/OpenHumanPortable-macos-arm64/bin/macos-arm64/cc-switch 2>/dev/null || true
+          build_package() {
+            local plat="$1"
+            local pkg="OpenHumanPortable-${plat}-${VER}"
+            local dist_dir="${DIST}/${pkg}"
 
-          # macOS x64
-          mkdir -p dist/OpenHumanPortable-macos-x64
-          rsync -a --exclude='bin' --exclude='dist' --exclude='.git*' . dist/OpenHumanPortable-macos-x64/
-          rm -rf dist/OpenHumanPortable-macos-x64/bin
-          mkdir -p dist/OpenHumanPortable-macos-x64/bin/macos-x64
-          cp bin/macos-x64/openhuman bin/macos-x64/cc-switch dist/OpenHumanPortable-macos-x64/bin/macos-x64/ 2>/dev/null || true
-          cp bin/macos-x64/python3 dist/OpenHumanPortable-macos-x64/bin/macos-x64/ 2>/dev/null || true
-          cp -r bin/macos-x64/python3-bin dist/OpenHumanPortable-macos-x64/bin/macos-x64/ 2>/dev/null || true
-          chmod +x dist/OpenHumanPortable-macos-x64/bin/macos-x64/openhuman dist/OpenHumanPortable-macos-x64/bin/macos-x64/cc-switch 2>/dev/null || true
+            mkdir -p "${dist_dir}/bin/${plat}" "${dist_dir}/lib" "${dist_dir}/data"
 
-          # Linux x64
-          mkdir -p dist/OpenHumanPortable-linux-x64
-          rsync -a --exclude='bin' --exclude='dist' --exclude='.git*' . dist/OpenHumanPortable-linux-x64/
-          rm -rf dist/OpenHumanPortable-linux-x64/bin
-          mkdir -p dist/OpenHumanPortable-linux-x64/bin/linux-x64
-          cp bin/linux-x64/openhuman bin/linux-x64/cc-switch dist/OpenHumanPortable-linux-x64/bin/linux-x64/ 2>/dev/null || true
-          cp bin/linux-x64/python3 dist/OpenHumanPortable-linux-x64/bin/linux-x64/ 2>/dev/null || true
-          cp -r bin/linux-x64/python3-bin dist/OpenHumanPortable-linux-x64/bin/linux-x64/ 2>/dev/null || true
-          chmod +x dist/OpenHumanPortable-linux-x64/bin/linux-x64/openhuman dist/OpenHumanPortable-linux-x64/bin/linux-x64/cc-switch 2>/dev/null || true
+            # Copy launcher scripts
+            cp OpenHumanPortable.bat OpenHumanPortable.command OpenHumanPortable.sh "${dist_dir}/" 2>/dev/null || true
+            cp setup.sh "${dist_dir}/"
+            cp VERSION "${dist_dir}/"
+            cp -r tools "${dist_dir}/" 2>/dev/null || true
+            cp -r lib "${dist_dir}/"
+            cp -r installers "${dist_dir}/" 2>/dev/null || true
 
-          # Windows x64
-          mkdir -p dist/OpenHumanPortable-windows-x64
-          rsync -a --exclude='bin' --exclude='dist' --exclude='.git*' . dist/OpenHumanPortable-windows-x64/
-          rm -rf dist/OpenHumanPortable-windows-x64/bin
-          mkdir -p dist/OpenHumanPortable-windows-x64/bin/windows-x64
-          cp bin/windows-x64/openhuman.exe bin/windows-x64/cc-switch.exe dist/OpenHumanPortable-windows-x64/bin/windows-x64/ 2>/dev/null || true
-          cp -r bin/windows-x64/python dist/OpenHumanPortable-windows-x64/bin/windows-x64/ 2>/dev/null || true
+            # Copy platform binaries
+            cp -r "bin/${plat}/"* "${dist_dir}/bin/${plat}/" 2>/dev/null || true
+
+            # Set permissions
+            chmod +x "${dist_dir}/OpenHumanPortable.command" "${dist_dir}/OpenHumanPortable.sh" 2>/dev/null || true
+            chmod +x "${dist_dir}/bin/${plat}/"* 2>/dev/null || true
+
+            # Create zip
+            (cd "$DIST" && zip -r "${pkg}.zip" "${pkg}")
+            rm -rf "${dist_dir}"
+          }
+
+          for plat in macos-arm64 macos-x64 linux-x64 windows-x64; do
+            if [ -d "bin/$plat" ] && [ "$(ls -A bin/$plat 2>/dev/null)" ]; then
+              echo "  Packaging $plat ..."
+              build_package "$plat"
+            else
+              echo "  Skipping $plat (no binaries)"
+            fi
+          done
 
           # All-platforms package
-          mkdir -p dist/OpenHumanPortable-all-platforms/bin/{macos-arm64,macos-x64,linux-x64,windows-x64}
-          rsync -a --exclude='bin' --exclude='dist' --exclude='.git*' . dist/OpenHumanPortable-all-platforms/
-          for plat in macos-arm64 macos-x64 linux-x64; do
-            cp bin/$plat/openhuman bin/$plat/cc-switch dist/OpenHumanPortable-all-platforms/bin/$plat/ 2>/dev/null || true
-            chmod +x dist/OpenHumanPortable-all-platforms/bin/$plat/openhuman dist/OpenHumanPortable-all-platforms/bin/$plat/cc-switch 2>/dev/null || true
-            cp bin/$plat/python3 dist/OpenHumanPortable-all-platforms/bin/$plat/ 2>/dev/null || true
-            cp -r bin/$plat/python3-bin dist/OpenHumanPortable-all-platforms/bin/$plat/ 2>/dev/null || true
-          done
-          cp bin/windows-x64/openhuman.exe bin/windows-x64/cc-switch.exe dist/OpenHumanPortable-all-platforms/bin/windows-x64/ 2>/dev/null || true
-          cp -r bin/windows-x64/python dist/OpenHumanPortable-all-platforms/bin/windows-x64/ 2>/dev/null || true
+          echo "  Packaging all-platforms ..."
+          pkg="OpenHumanPortable-all-platforms-${VER}"
+          dist_dir="${DIST}/${pkg}"
+          mkdir -p "${dist_dir}/bin" "${dist_dir}/lib" "${dist_dir}/data"
+          cp OpenHumanPortable.bat OpenHumanPortable.command OpenHumanPortable.sh "${dist_dir}/"
+          cp setup.sh VERSION "${dist_dir}/"
+          cp -r tools lib installers "${dist_dir}/" 2>/dev/null || true
+          cp -r bin "${dist_dir}/"
+          find "${dist_dir}" -name '*.sh' -o -name '*.command' | xargs chmod +x 2>/dev/null || true
+          find "${dist_dir}/bin" -type f | xargs chmod +x 2>/dev/null || true
+          (cd "$DIST" && zip -r "${pkg}.zip" "${pkg}")
+          rm -rf "${dist_dir}"
 
-          # Convert Windows scripts to CRLF (.bat/.vbs must have \r\n)
-          find dist/OpenHumanPortable-windows-x64 dist/OpenHumanPortable-all-platforms \
-            -maxdepth 2 \( -name "*.bat" -o -name "*.vbs" \) -exec sed -i 's/$/\r/' {} + 2>/dev/null || true
-          echo "  [ok] CRLF converted for .bat/.vbs"
-
-          # Zip them
-          cd dist
-          for d in OpenHumanPortable-*; do
-            zip -r "${d}-${VER}.zip" "$d" > /dev/null
-            echo "  packed ${d}-${VER}.zip"
-          done
+          echo "  Done:"
+          ls -lh "$DIST"/*.zip
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: openhuman-portable-${{ steps.ver.outputs.version }}
+          name: packages
           path: dist/*.zip
 
       - name: Create release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist/*.zip
-          body: |
-            OpenHuman Portable
-            - OpenHuman version: ${{ steps.oh_ver.outputs.tag }}
-            - Build version: ${{ steps.ver.outputs.version }}
-
-            **Bundled:** OpenHuman binary + cc-switch GUI + embedded Python.
-
-            | Package | Platform |
-            |---------|----------|
-            | `OpenHumanPortable-macos-arm64` | Apple Silicon Mac |
-            | `OpenHumanPortable-macos-x64` | Intel Mac |
-            | `OpenHumanPortable-linux-x64` | Linux x86_64 |
-            | `OpenHumanPortable-windows-x64` | Windows x86_64 |
-            | `OpenHumanPortable-all-platforms` | All of the above |
-
-            Download the zip for your platform (or `all-platforms` for USB distribution),
-            extract anywhere, and double-click the launcher:
-
-            - macOS:   `OpenHumanPortable.command`
-            - Linux:   `./OpenHumanPortable.sh`
-            - Windows: `OpenHumanPortable.bat`
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "${{ github.ref_name }}" \
+            --generate-notes \
+            dist/*.zip
