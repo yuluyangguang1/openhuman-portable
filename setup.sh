@@ -16,7 +16,7 @@ VER=""
 ALL=0
 while [ $# -gt 0 ]; do
     case "$1" in
-        --version) VER="$2"; shift 2 ;;
+        --version) if [ $# -lt 2 ]; then echo "  [!] --version requires a value"; exit 1; fi; VER="$2"; shift 2 ;;
         --all)     ALL=1; shift ;;
         -h|--help)
             cat <<'EOF'

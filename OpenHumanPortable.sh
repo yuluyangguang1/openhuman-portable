@@ -39,7 +39,13 @@ mkdir -p "$SCRIPT_DIR/data/.openhuman/cef-cache" 2>/dev/null
 # First launch: show guide
 if [ ! -f "$SCRIPT_DIR/data/.openhuman/.setup-done" ]; then
     echo "  First launch - opening setup guide..."
-    xdg-open "$SCRIPT_DIR/lib/first-launch.html" 2>/dev/null
+    if command -v xdg-open >/dev/null 2>&1; then
+        xdg-open "$SCRIPT_DIR/lib/first-launch.html" 2>/dev/null
+    elif command -v sensible-browser >/dev/null 2>&1; then
+        sensible-browser "$SCRIPT_DIR/lib/first-launch.html" 2>/dev/null
+    else
+        echo "  [i] Open this guide manually: $SCRIPT_DIR/lib/first-launch.html"
+    fi
     touch "$SCRIPT_DIR/data/.openhuman/.setup-done"
 fi
 

@@ -87,13 +87,17 @@ jobs:
 
             mkdir -p "${dist_dir}/bin/${plat}" "${dist_dir}/lib" "${dist_dir}/data"
 
-            # Copy launcher scripts
+            # Copy launcher scripts + tools + lib
             cp OpenHumanPortable.bat OpenHumanPortable.command OpenHumanPortable.sh "${dist_dir}/" 2>/dev/null || true
             cp setup.sh "${dist_dir}/"
             cp VERSION "${dist_dir}/"
             cp -r tools "${dist_dir}/" 2>/dev/null || true
             cp -r lib "${dist_dir}/"
-            cp -r installers "${dist_dir}/" 2>/dev/null || true
+
+            # Copy installers to dist root (not inside installers/ subdir)
+            cp -r installers/OpenHumanPortable.app "${dist_dir}/" 2>/dev/null || true
+            cp installers/OpenHumanPortable.vbs "${dist_dir}/" 2>/dev/null || true
+            cp installers/OpenHumanPortable.desktop "${dist_dir}/" 2>/dev/null || true
 
             # Copy platform binaries
             cp -r "bin/${plat}/"* "${dist_dir}/bin/${plat}/" 2>/dev/null || true
@@ -123,7 +127,10 @@ jobs:
           mkdir -p "${dist_dir}/bin" "${dist_dir}/lib" "${dist_dir}/data"
           cp OpenHumanPortable.bat OpenHumanPortable.command OpenHumanPortable.sh "${dist_dir}/"
           cp setup.sh VERSION "${dist_dir}/"
-          cp -r tools lib installers "${dist_dir}/" 2>/dev/null || true
+          cp -r tools lib "${dist_dir}/" 2>/dev/null || true
+          cp -r installers/OpenHumanPortable.app "${dist_dir}/" 2>/dev/null || true
+          cp installers/OpenHumanPortable.vbs "${dist_dir}/" 2>/dev/null || true
+          cp installers/OpenHumanPortable.desktop "${dist_dir}/" 2>/dev/null || true
           cp -r bin "${dist_dir}/"
           find "${dist_dir}" -name '*.sh' -o -name '*.command' | xargs chmod +x 2>/dev/null || true
           find "${dist_dir}/bin" -type f | xargs chmod +x 2>/dev/null || true

@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-setlocal enabledelayedexpansion
+setlocal 
 
 echo.
 echo   ========================================
@@ -14,8 +14,14 @@ set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
 :: Detect binary
 if exist "%SCRIPT_DIR%\bin\windows-x64\OpenHuman.exe" (
     set "OPENHUMAN_BIN=%SCRIPT_DIR%\bin\windows-x64\OpenHuman.exe"
+) else if exist "%SCRIPT_DIR%\bin\windows-x64\OpenHuman-setup.exe" (
+    echo   [!] Found installer: OpenHuman-setup.exe
+    echo   Please run it once to extract OpenHuman.exe, then relaunch.
+    start "" "%SCRIPT_DIR%\bin\windows-x64\OpenHuman-setup.exe"
+    pause
+    exit /b 0
 ) else (
-    echo   [ERROR] OpenHuman.exe not found in bin\windows-x64\
+    echo   [ERROR] OpenHuman not found in bin\windows-x64\
     echo   Run setup.sh first to download binaries.
     pause
     exit /b 1
@@ -33,8 +39,9 @@ if not exist "%SCRIPT_DIR%\data\.openhuman\.setup-done" (
     echo. > "%SCRIPT_DIR%\data\.openhuman\.setup-done"
 )
 
-:: Portable environment — all paths stay inside the portable folder
+:: Portable environment -- all paths stay inside the portable folder
 set "HOME=%SCRIPT_DIR%\data\.home"
+set "USERPROFILE=%SCRIPT_DIR%\data\.home"
 set "OPENHUMAN_WORKSPACE=%SCRIPT_DIR%\data\.openhuman"
 set "OPENHUMAN_CEF_CACHE_PATH=%SCRIPT_DIR%\data\.openhuman\cef-cache"
 
