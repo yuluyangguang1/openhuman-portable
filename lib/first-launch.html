@@ -125,7 +125,7 @@ a:hover{border-bottom-color:var(--accent)}
 </head>
 <body>
 
-<button class="theme-toggle" onclick="toggleTheme()" title=""></button>
+<button class="theme-toggle" onclick="toggleTheme()" title="切换主题">&#9790;</button>
 
 <div class="wrap">
 
@@ -138,7 +138,7 @@ a:hover{border-bottom-color:var(--accent)}
 
 <!-- Quick Start -->
 <div class="section">
- <h2><span class="icon"></span> </h2>
+ <h2><span class="icon">&#9654;</span> 快速开始</h2>
 
  <div class="step">
  <div class="step-head"><span class="step-num">1</span><span class="step-title"> OpenHuman</span></div>
@@ -167,7 +167,7 @@ a:hover{border-bottom-color:var(--accent)}
 
 <!-- Runtime Choice -->
 <div class="section">
- <h2><span class="icon"></span> </h2>
+ <h2><span class="icon">&#9654;</span> 运行模式选择</h2>
 
  <div class="routes">
  <div class="route rec">
@@ -191,7 +191,7 @@ a:hover{border-bottom-color:var(--accent)}
 
 <!-- Add Provider -->
 <div class="section">
- <h2><span class="icon"></span> API KeyBYOK</h2>
+ <h2><span class="icon">&#9654;</span> 配置 API Key（BYOK）</h2>
 
  <div class="step">
  <div class="step-head"><span class="step-num">1</span><span class="step-title"></span></div>
@@ -250,7 +250,7 @@ a:hover{border-bottom-color:var(--accent)}
 
 <!-- Supported Providers -->
 <div class="section">
- <h2><span class="icon"></span> </h2>
+ <h2><span class="icon">&#9654;</span> 内置供应商</h2>
 
  <div class="tabs">
  <div class="tab active" onclick="switchTab(this,'tab-cloud')">Cloud</div>
@@ -306,51 +306,51 @@ a:hover{border-bottom-color:var(--accent)}
 
 <!-- Workloads -->
 <div class="section">
- <h2><span class="icon"></span> Advanced </h2>
+ <h2><span class="icon">&#9654;</span> 任务路由（Advanced 模式）</h2>
 
  <div class="callout">
  <strong>Advanced</strong> <strong>Managed</strong> 
  </div>
 
  <div class="tabs">
- <div class="tab active" onclick="switchTab(this,'tab-chat')"></div>
- <div class="tab" onclick="switchTab(this,'tab-bg')"></div>
+ <div class="tab active" onclick="switchTab(this,'tab-chat')">对话任务</div>
+ <div class="tab" onclick="switchTab(this,'tab-bg')">后台任务</div>
  </div>
 
  <div id="tab-chat" class="tab-content active">
  <div class="step">
- <div class="step-head"><span class="step-num"></span><span class="step-title">Chat</span></div>
+ <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Chat</span></div>
  <div class="step-desc"> — </div>
  </div>
  <div class="step">
- <div class="step-head"><span class="step-num"></span><span class="step-title">Reasoning</span></div>
+ <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Reasoning</span></div>
  <div class="step-desc"> — </div>
  </div>
  <div class="step">
- <div class="step-head"><span class="step-num"></span><span class="step-title">Agentic</span></div>
+ <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Agentic</span></div>
  <div class="step-desc"> + — </div>
  </div>
  <div class="step">
- <div class="step-head"><span class="step-num"></span><span class="step-title">Coding</span></div>
+ <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Coding</span></div>
  <div class="step-desc"> — </div>
  </div>
  </div>
 
  <div id="tab-bg" class="tab-content">
  <div class="step">
- <div class="step-head"><span class="step-num"></span><span class="step-title">Memory Summarization</span></div>
+ <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Memory Summarization</span></div>
  <div class="step-desc"> — </div>
  </div>
  <div class="step">
- <div class="step-head"><span class="step-num"></span><span class="step-title">Heartbeat</span></div>
+ <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Heartbeat</span></div>
  <div class="step-desc"> — </div>
  </div>
  <div class="step">
- <div class="step-head"><span class="step-num"></span><span class="step-title">Learning / Reflections</span></div>
+ <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Learning / Reflections</span></div>
  <div class="step-desc"> — </div>
  </div>
  <div class="step">
- <div class="step-head"><span class="step-num"></span><span class="step-title">Subconscious</span></div>
+ <div class="step-head"><span class="step-num">&#8226;</span><span class="step-title">Subconscious</span></div>
  <div class="step-desc"> — </div>
  </div>
  </div>
@@ -358,7 +358,7 @@ a:hover{border-bottom-color:var(--accent)}
 
 <!-- FAQ -->
 <div class="section">
- <h2><span class="icon"></span> </h2>
+ <h2><span class="icon">&#9654;</span> 常见问题</h2>
 
  <div class="faq">
  <div class="faq-item" onclick="this.classList.toggle('open')">
@@ -386,7 +386,7 @@ a:hover{border-bottom-color:var(--accent)}
 
 <!-- Done -->
 <div class="done">
- <div class="icon"></div>
+ <div class="icon" style="font-size:40px;color:var(--accent)">&#10003;</div>
  <p></p>
  <div class="hint"> · </div>
 </div>
@@ -405,12 +405,12 @@ a:hover{border-bottom-color:var(--accent)}
 function toggleTheme(){
  var h=document.documentElement,t=h.getAttribute('data-theme')==='dark'?'light':'dark';
  h.setAttribute('data-theme',t);
- document.querySelector('.theme-toggle').textContent=t==='dark'?'':'';
+ document.querySelector('.theme-toggle').textContent=t==='dark'?'\u263E':'\u2600'';
  localStorage.setItem('oh-theme',t);
 }
 (function(){
  var s=localStorage.getItem('oh-theme');
- if(s){document.documentElement.setAttribute('data-theme',s);document.querySelector('.theme-toggle').textContent=s==='dark'?'':'';}
+ if(s){document.documentElement.setAttribute('data-theme',s);document.querySelector('.theme-toggle').textContent=s==='dark'?'\u263E':'\u2600'';}
 })();
 function switchTab(el,id){
  el.parentElement.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
